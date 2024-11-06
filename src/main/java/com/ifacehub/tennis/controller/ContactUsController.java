@@ -15,6 +15,11 @@ public class ContactUsController {
     @Autowired
     private ContactUsService contactUsService;
 
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello from Spring Boot!";
+    }
+
     @PostMapping("/saveContact")
     public ResponseEntity<ResponseObject> saveContact(@RequestBody ContactUs contactUs){
         ResponseObject response = contactUsService.saveContact(contactUs);
