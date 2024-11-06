@@ -4,10 +4,8 @@ FROM openjdk:17-jdk-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the JAR file into the container
-# Replace `target` with the directory where your JAR file is generated after building
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
+# Copy the JAR file into the container (replace with the actual name of your JAR file)
+COPY target/Tennis-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose the port that Spring Boot runs on
 EXPOSE 8082
