@@ -1,11 +1,15 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:17-jdk-slim
+# Build stage
+FROM maven:3.8.2-jdk-11 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Set the working directory in the container
+# Package stage
+FROM openjdk:17-jdk-slim
 WORKDIR /app
 
-# Copy the JAR file into the container (replace with the actual name of your JAR file)
-COPY target/Tennis-0.0.1-SNAPSHOT.jar app.jar
+# Copy the built JAR file from the build stage
+COPY --from=build /app/target/tennis-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose the port that Spring Boot runs on
 EXPOSE 8082
