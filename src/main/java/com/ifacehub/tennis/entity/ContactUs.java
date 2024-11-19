@@ -22,4 +22,5 @@ public class ContactUs extends Auditable<Long>{
     private String email;
     private String subject;
     private String message;
+    private Byte bitDeletedFlag;
 }

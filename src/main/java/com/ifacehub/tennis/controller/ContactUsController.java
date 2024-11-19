@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/contact")
 @CrossOrigin(origins = "*")
 public class ContactUsController {
     @Autowired
@@ -24,5 +24,11 @@ public class ContactUsController {
     public ResponseEntity<ResponseObject> saveContact(@RequestBody ContactUs contactUs){
         ResponseObject response = contactUsService.saveContact(contactUs);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getContactById(@PathVariable  Long id){
+        ResponseObject responseObject = contactUsService.getContactById(id);
+        return new ResponseEntity<>(responseObject,HttpStatus.OK);
     }
 }
