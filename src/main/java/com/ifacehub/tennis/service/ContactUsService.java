@@ -8,4 +8,8 @@ public interface ContactUsService {
     ResponseObject saveContact(ContactUs contactUs);
 
     ResponseObject getContactById(Long id);
+
+    ResponseObject updateContact(Long id, ContactUs contactUs);
+
+    ResponseObject getAllContact();
 }

@@ -18,9 +18,9 @@ public class ContactUs extends Auditable<Long>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String email;
-    private String subject;
-    private String message;
+    private String phoneNumber;
+    private String city;
+    private String state;
+    private String country;
     private Byte bitDeletedFlag;
 }
