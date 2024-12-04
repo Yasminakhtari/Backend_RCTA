@@ -52,7 +52,7 @@ public class EmailService {
         payload.put("Message", contactUsDto.getMessage()); // Optionally include plain text
         payload.put("Name", contactUsDto.getName());
         payload.put("Email", contactUsDto.getEmail());
-        payload.put("from_name", "RC Tennis Academy");
+        payload.put("from_name", contactUsDto.getName());
 
         RestTemplate restTemplate = new RestTemplate();
 
