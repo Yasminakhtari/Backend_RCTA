@@ -61,26 +61,4 @@ public class AcademyCoachController {
         ResponseObject response = academyCoachService.getAllCoach();
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
-    @GetMapping("/download/{fileName}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
-        try {
-            // Load the file as a resource
-            Resource resource = fileService.loadFileAsResource(fileName);
-
-            // Determine the file's content type
-            String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-            if (contentType == null) {
-                contentType = "application/octet-stream";
-            }
-
-            // Return the file as a downloadable response
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(contentType))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
-                    .body(resource);
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
 }

@@ -23,6 +23,7 @@ public class EmailService {
 
     @Autowired
     private TemplateEngine templateEngine;
+
     @Value("${web3forms.api.url}")
     private String web3FormsApiUrl;
 
@@ -33,9 +34,10 @@ public class EmailService {
     public ResponseObject sendContactUsEmail(ContactUsDto contactUsDto) throws MessagingException {
         // Prepare the context for Thymeleaf
         Context context = new Context();
-        context.setVariable("name", contactUsDto.getName());
+       context.setVariable("name", contactUsDto.getName());
+//        context.setVariable("name", "RC Tennis Academy");
         context.setVariable("email", contactUsDto.getEmail());
-        context.setVariable("subject", contactUsDto.getSubject());
+//        context.setVariable("subject", contactUsDto.getSubject());
         context.setVariable("message", contactUsDto.getMessage());
 
         // Render the Thymeleaf template
@@ -46,11 +48,11 @@ public class EmailService {
         // Prepare the payload for Web3Forms
         Map<String, String> payload = new HashMap<>();
         payload.put("access_key", apiKey);
-        payload.put("from_name", contactUsDto.getName());
-//        payload.put("from_email", contactUsDto.getEmail());
         payload.put("subject", contactUsDto.getSubject());
-//        payload.put("html", renderedTemplate);
-        payload.put("", plainTextMessage); // Optionally include plain text
+        payload.put("Message", contactUsDto.getMessage()); // Optionally include plain text
+        payload.put("Name", contactUsDto.getName());
+        payload.put("Email", contactUsDto.getEmail());
+        payload.put("from_name", "RC Tennis Academy");
 
         RestTemplate restTemplate = new RestTemplate();
 
