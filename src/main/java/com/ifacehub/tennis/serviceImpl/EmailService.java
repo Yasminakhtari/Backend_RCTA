@@ -40,9 +40,9 @@ public class EmailService {
         Map<String, String> payload = new HashMap<>();
         payload.put("access_key", apiKey);
         payload.put("from_name", contactUsDto.getName());
-//        payload.put("from_name", contactUsDto.getEmail());
+        payload.put("Email", contactUsDto.getEmail());
         payload.put("subject", contactUsDto.getSubject());
-//        payload.put("html", renderedTemplate);
+        payload.put("Name", contactUsDto.getName());
         payload.put("Message", contactUsDto.getMessage());
         payload.put("h-captcha-response", ""); // Send empty value for hCaptcha token
         RestTemplate restTemplate = new RestTemplate();
