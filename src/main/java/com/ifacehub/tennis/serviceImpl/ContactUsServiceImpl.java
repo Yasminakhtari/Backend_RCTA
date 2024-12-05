@@ -1,10 +1,8 @@
 package com.ifacehub.tennis.serviceImpl;
 
 import com.ifacehub.tennis.entity.ContactUs;
-import com.ifacehub.tennis.entity.Role;
 import com.ifacehub.tennis.repository.ContactUsRepository;
 import com.ifacehub.tennis.service.ContactUsService;
-import com.ifacehub.tennis.service.EmailService;
 import com.ifacehub.tennis.util.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

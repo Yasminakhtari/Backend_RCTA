@@ -2,9 +2,8 @@ package com.ifacehub.tennis.controller;
 
 import com.ifacehub.tennis.entity.ContactUs;
 import com.ifacehub.tennis.requestDto.ContactUsDto;
-import com.ifacehub.tennis.requestDto.RoleDto;
 import com.ifacehub.tennis.service.ContactUsService;
-import com.ifacehub.tennis.service.EmailService;
+import com.ifacehub.tennis.serviceImpl.EmailService;
 import com.ifacehub.tennis.util.ResponseObject;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
