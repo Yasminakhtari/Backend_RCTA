@@ -40,10 +40,11 @@ public class EmailService {
         Map<String, String> payload = new HashMap<>();
         payload.put("access_key", apiKey);
         payload.put("from_name", contactUsDto.getName());
-//        payload.put("from_email", contactUsDto.getEmail());
+//        payload.put("from_name", contactUsDto.getEmail());
         payload.put("subject", contactUsDto.getSubject());
 //        payload.put("html", renderedTemplate);
-        payload.put("", plainTextMessage); // Optionally include plain text
+        payload.put("Message", contactUsDto.getMessage());
+        payload.put("h-captcha-response", ""); // Send empty value for hCaptcha token
         RestTemplate restTemplate = new RestTemplate();
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(web3FormsApiUrl, payload,String.class);
