@@ -12,4 +12,8 @@ public interface UserRepository extends JpaSpecificationExecutor<User>,JpaReposi
     Optional<User> findByUsername(String username);
 
     Optional<User> findByIdAndBitDeletedFlag(Long id, byte b);
+    
+    Optional<User> findByEmail(String email);
+    
+    
 }

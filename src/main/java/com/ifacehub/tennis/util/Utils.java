@@ -1,5 +1,7 @@
 package com.ifacehub.tennis.util;
 
+import java.security.SecureRandom;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -11,4 +13,19 @@ public class Utils {
         mapper.registerModule(new JavaTimeModule());
         return mapper;
     }
+    
+    
+    public static String  generateOtp() {
+		 int otpLength = 6;
+		 
+		 SecureRandom random = new SecureRandom();
+		 
+		 StringBuilder otp = new StringBuilder(otpLength);
+		 
+		 for(int i=0 ; i<otpLength ;i++) {
+			 otp.append(random.nextInt(10));
+		 }
+		 
+		 return otp.toString();
+	 }
 }
