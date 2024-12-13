@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface TennisService {
-    ResponseObject createTennisService(Tennis tennis, MultipartFile file);
+    ResponseObject createTennisService(Tennis tennis);
 
     List<Tennis> getAllTennis();
 

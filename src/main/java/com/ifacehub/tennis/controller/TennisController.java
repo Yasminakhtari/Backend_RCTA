@@ -29,17 +29,19 @@ public class TennisController {
 
     @PostMapping("/createTennis")
     public ResponseEntity<ResponseObject> createTennisService(
-            @RequestParam("tennisData") String tennis,
-            @RequestParam("file") MultipartFile file
+//            @RequestParam("tennisData") String tennis,
+//            @RequestParam(value = "file", required = false)  MultipartFile file
+    		@RequestBody Tennis tennis
     ) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Tennis tennisObj = new Tennis();
-        try {
-            tennisObj = objectMapper.readValue(tennis, Tennis.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        ResponseObject response = tennisService.createTennisService(tennisObj, file);
+    	System.out.println("form data" + tennis);
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        Tennis tennisObj = new Tennis();
+//        try {
+//            tennisObj = objectMapper.readValue(tennis, Tennis.class);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();	
+//        }
+        ResponseObject response = tennisService.createTennisService(tennis);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

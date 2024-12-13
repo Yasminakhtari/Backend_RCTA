@@ -21,12 +21,12 @@ public class TennisServiceImpl implements TennisService {
 
 
     @Override
-    public ResponseObject createTennisService(Tennis tennis, MultipartFile file) {
+    public ResponseObject createTennisService(Tennis tennis) {
         try {
-            if (file != null && !file.isEmpty()) {
-                String fileName = fileService.saveFile(file);
-                tennis.setImgUrl(fileName); // Save file name in the database
-            }
+//            if (file != null && !file.isEmpty()) {
+//                String fileName = fileService.saveFile(file);
+//                tennis.setImgUrl(fileName); // Save file name in the database
+//            }
             Tennis savedTennis= tennisRepository.save(tennis);
             return new ResponseObject(savedTennis, "SUCCESS", HttpStatus.CREATED, "Tennis Service created successfully");
         } catch (Exception e) {
