@@ -55,9 +55,9 @@ public class TennisController {
         return tennisService.getAllByStatus(status);
     }
 
-    @PostMapping("/updateTennis")
-    public ResponseEntity<ResponseObject> updateTennis(@RequestBody Tennis tennis) {
-        ResponseObject response = tennisService.updateTennis(tennis);
+    @PutMapping("/updateTennis/{id}")
+    public ResponseEntity<ResponseObject> updateTennis(@PathVariable Long id,@RequestBody Tennis tennis) {
+        ResponseObject response = tennisService.updateTennis(id,tennis);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
@@ -77,6 +77,11 @@ public class TennisController {
     @GetMapping("/getAllCategoriesAndSubCategories")
     public List<Object[]> getAllCategoriesAndSubCategories() {
         return tennisService.findAllCategoriesAndSubCategories();
+    }
+    @GetMapping("/getTennis/{id}")
+    public ResponseEntity<ResponseObject> getTennisById(@PathVariable Long id) {
+        ResponseObject res = tennisService.getTennisById(id);
+        return new ResponseEntity<>(res, res.getHttpStatus());
     }
 
     @GetMapping("/download/{fileName}")
