@@ -13,11 +13,13 @@ public interface TennisService {
 
     List<Tennis> getAllByStatus(String status);
 
-    ResponseObject updateTennis(Tennis tennis);
+    ResponseObject updateTennis(Long id,Tennis tennis);
 
     ResponseObject toggleStatus(Long id, String status);
 
     ResponseObject deleteTennis(Long id);
 
     List<Object[]> findAllCategoriesAndSubCategories();
+
+    ResponseObject getTennisById(Long id);
 }

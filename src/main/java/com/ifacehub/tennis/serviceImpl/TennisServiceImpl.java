@@ -45,28 +45,54 @@ public class TennisServiceImpl implements TennisService {
     }
 
     @Override
-    public ResponseObject updateTennis(Tennis tennis) {
-        if (tennis == null || tennis.getId() == null) {
-            return new ResponseObject(HttpStatus.BAD_REQUEST,"ERROR","Tennis object or ID is invalid.");
+    public ResponseObject updateTennis(Long id,Tennis tennis) {
+        if (tennis == null) {
+            return new ResponseObject(HttpStatus.BAD_REQUEST, "ERROR", "Tennis object is invalid.");
         }
-        try {
-            // Fetch the existing entity
-            Tennis existingTennis = tennisRepository.findById(tennis.getId())
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "Tennis entity with ID " + tennis.getId() + " not found."));
 
-            // Update the fields only if they are not null
+        try {
+            // Fetch the existing entity by ID
+            Tennis existingTennis = tennisRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Tennis entity with ID " + id + " not found."));
+
+            // Update fields only if they are not null
             updateFields(existingTennis, tennis);
 
             // Save the updated entity
-            tennisRepository.save(existingTennis);
-            return new ResponseObject(tennis,"SUCCESS",HttpStatus.OK, "Data updated successfully");
+            Tennis updatedTennis = tennisRepository.save(existingTennis);
+
+            // Return success response
+            return new ResponseObject(updatedTennis, "SUCCESS", HttpStatus.OK, "Data updated successfully");
         } catch (IllegalArgumentException e) {
-//            return ResponseEntity.status(404).body(new ApiResponse("Error: Ivblu not found. Please check the ID."));
-            return new ResponseObject("","ERROR",HttpStatus.BAD_REQUEST, "Tennis not found. Please check the ID.");
+            // Handle specific exception for entity not found
+            return new ResponseObject("", "ERROR", HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
-            return new ResponseObject("","ERROR",HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred while updating the Tennis.");
+            // Handle any unexpected exceptions
+            return new ResponseObject("", "ERROR", HttpStatus.INTERNAL_SERVER_ERROR,
+                    "An unexpected error occurred while updating the Tennis.");
         }
+//        if (tennis == null || tennis.getId() == null) {
+//            return new ResponseObject(HttpStatus.BAD_REQUEST,"ERROR","Tennis object or ID is invalid.");
+//        }
+//        try {
+//            // Fetch the existing entity
+//            Tennis existingTennis = tennisRepository.findById(tennis.getId())
+//                    .orElseThrow(() -> new IllegalArgumentException(
+//                            "Tennis entity with ID " + tennis.getId() + " not found."));
+//
+//            // Update the fields only if they are not null
+//            updateFields(existingTennis, tennis);
+//
+//            // Save the updated entity
+//            tennisRepository.save(existingTennis);
+//            return new ResponseObject(tennis,"SUCCESS",HttpStatus.OK, "Data updated successfully");
+//        } catch (IllegalArgumentException e) {
+////            return ResponseEntity.status(404).body(new ApiResponse("Error: Ivblu not found. Please check the ID."));
+//            return new ResponseObject("","ERROR",HttpStatus.BAD_REQUEST, "Tennis not found. Please check the ID.");
+//        } catch (Exception e) {
+//            return new ResponseObject("","ERROR",HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred while updating the Tennis.");
+//        }
     }
 
     @Override
@@ -108,6 +134,24 @@ public class TennisServiceImpl implements TennisService {
     @Override
     public List<Object[]> findAllCategoriesAndSubCategories() {
         return tennisRepository.findAllCategoryAndSubCategory();
+    }
+
+    @Override
+    public ResponseObject getTennisById(Long id) {
+        try {
+            Optional<Tennis> tennisOptional = tennisRepository.findById(id);
+
+            if (tennisOptional.isPresent()) {
+                Tennis tennis = tennisOptional.get();
+                return new ResponseObject(tennisOptional, "SUCCESS", HttpStatus.OK, "Data retrieved successfully");
+            } else {
+                return new ResponseObject(null, "ERROR", HttpStatus.NOT_FOUND, "Data not found");
+            }
+        } catch (RuntimeException e) {
+            return new ResponseObject(null, "ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while fetching the Data");
+        } catch (Exception e) {
+            return new ResponseObject(null, "ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
+        }
     }
 
     private void updateFields(Tennis existingTennis, Tennis updatedTennis) {
