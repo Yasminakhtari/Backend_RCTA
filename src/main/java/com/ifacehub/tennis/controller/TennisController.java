@@ -106,4 +106,27 @@ public class TennisController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+    
+  //below are Added 14/12/2024
+    
+//    @GetMapping("/getGroups")
+//    public List<String> getGroups() {
+//        return tennisService.getGroups();
+//    }
+//    
+//    @GetMapping("/getCategories")
+//    public List<String> getCategories(@RequestParam String group) {
+//        return tennisService.getCategories(group);
+//    }
+//    
+//    @GetMapping("/getSubCategories")
+//    public List<String> getSubCategories(@RequestParam String group, @RequestParam String category) {
+//        return tennisService.getSubCategories(group, category);
+//    }
+    
+    @GetMapping("/getFilteredTennis")
+    public ResponseEntity<List<Tennis>> getFilteredTennis(@RequestParam(required = false) String group,@RequestParam(required = false) String category,@RequestParam (required = false) String subcategory){
+    		List<Tennis> filteredTennis = tennisService.getFilteredTennis(group, category, subcategory);
+    	return new ResponseEntity<>(filteredTennis,HttpStatus.OK);
+    }
 }

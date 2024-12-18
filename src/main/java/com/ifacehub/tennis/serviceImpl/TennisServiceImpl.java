@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -198,4 +200,46 @@ public class TennisServiceImpl implements TennisService {
             existingTennis.setPhoneNumber(updatedTennis.getPhoneNumber());
         }
     }
+    
+    
+	    @Override
+	    public List<String> getGroups() {
+	        return tennisRepository.findAllGroups();
+	    }
+
+    @Override
+    public List<String> getCategories(String group) {
+        switch (group) {
+            case "About-us":
+                return Arrays.asList("Coaches");
+            case "Contact-us":
+                return Arrays.asList(""); // No categories for Contact-us
+            case "Gallery":
+                return Arrays.asList("Coaches", "Students", "Achievements");
+            case "Products":
+                return Arrays.asList(); // No categories for Products
+            default:
+                return Arrays.asList();
+        }
+    }
+
+    @Override
+    public List<String> getSubCategories(String group, String category) {
+        if (group.equals("About-us") && category.equals("Coaches")) {
+            return Arrays.asList("Owner/Head Coach", "Assistant Coach", "Fitness Coach");
+        }
+        if (group.equals("Contact-us") && category.equals("")) {
+            return Arrays.asList("Phone No", "Email", "Current Place");
+        }
+        return Arrays.asList(); // Default empty list for other cases
+    }
+
+	@Override
+	public List<Tennis> getFilteredTennis(String group, String category, String subcategory) {
+		// TODO Auto-generated method stub
+		return tennisRepository.findFilteredTennis(group, category, subcategory);
+	}
+
 }
+
+
