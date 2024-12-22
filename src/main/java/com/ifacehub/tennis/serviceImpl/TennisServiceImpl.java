@@ -120,7 +120,7 @@ public class TennisServiceImpl implements TennisService {
 
             if (tennisOptional.isPresent()) {
                 Tennis tennis = tennisOptional.get();
-                tennisRepository.save(tennis); // Save the updated entity
+                tennisRepository.delete(tennis); // Save the updated entity
 
                 return new ResponseObject(tennis, "SUCCESS", HttpStatus.OK, "Data deleted successfully");
             } else {
