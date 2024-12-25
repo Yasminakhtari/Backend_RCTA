@@ -45,8 +45,8 @@ public class JwtService {
 
     private Boolean isTokenExpired(String token) {
         Date expiration = extractExpiration(token);
-//        return extractExpiration(token).before(new Date());
-        return expiration != null && expiration.before(new Date());
+        return extractExpiration(token).before(new Date());
+//        return expiration != null && expiration.before(new Date());
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
@@ -61,12 +61,14 @@ public class JwtService {
     }
 
     private String createToken(Map<String, Object> claims, String userName) {
+        long expirationTimeInMillis = System.currentTimeMillis() + (1000L * 60 * 60 * 24 * 30 * 2);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
 //                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 ))
 //                .setExpiration(new Date(System.currentTimeMillis()+ 1000 * 60 * 60 * 9))
+                .setExpiration(new Date(expirationTimeInMillis)) // Expiration
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
