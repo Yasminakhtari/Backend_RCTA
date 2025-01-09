@@ -15,7 +15,7 @@ public interface UserService {
 
     ResponseObject updateUser(Long id, UserDto updatedUser);
 
-    ResponseObject getAllUsers(Paging paging, String username, String email, String roleName);
+    ResponseObject getAllUsers();
     
     public Boolean sendOtp(String email) throws Exception;
     

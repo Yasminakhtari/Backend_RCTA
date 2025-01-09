@@ -46,23 +46,28 @@ public class AuthController {
         ResponseObject response = userService.updateUser(id,updatedUser);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
-    @GetMapping("/getAllUser")
-    public ResponseEntity<ResponseObject> getAllUser(
-            @RequestParam(value = "username", required = false) String username,
-            @RequestParam(value = "roleName", required = false) String roleName,
-            @RequestParam(value = "email", required = false) String email,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize
-    ){
-        Paging paging = new Paging().setPage(pageNumber).setLimit(pageSize);
-
-        // Call service to fetch all users with pagination and filters
-        ResponseObject responseObject = userService.getAllUsers(
-                paging, username, email, roleName);
-
-        // Return the response entity with the ResponseObject and the corresponding HTTP status
-        return new ResponseEntity<>(responseObject, responseObject.getHttpStatus());
-    }
+//    @GetMapping("/getAllUser")
+//    public ResponseEntity<ResponseObject> getAllUser(
+//            @RequestParam(value = "username", required = false) String username,
+//            @RequestParam(value = "roleName", required = false) String roleName,
+//            @RequestParam(value = "email", required = false) String email,
+//            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+//            @RequestParam(value = "pageSize", required = false) Integer pageSize
+//    ){
+//        Paging paging = new Paging().setPage(pageNumber).setLimit(pageSize);
+//
+//        // Call service to fetch all users with pagination and filters
+//        ResponseObject responseObject = userService.getAllUsers(
+//                paging, username, email, roleName);
+//
+//        // Return the response entity with the ResponseObject and the corresponding HTTP status
+//        return new ResponseEntity<>(responseObject, responseObject.getHttpStatus());
+//    }
+        @GetMapping("/getAllUsers")
+        public ResponseEntity<ResponseObject> getAllRole() {
+            ResponseObject response = userService.getAllUsers();
+            return new ResponseEntity<>(response, response.getHttpStatus());
+        }
     
     //send otp
     @PostMapping("/sendotp/{email}")

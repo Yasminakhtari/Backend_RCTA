@@ -175,53 +175,63 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseObject getAllUsers(Paging paging, String username, String email, String roleName) {
+    public ResponseObject getAllUsers() {
         try {
-            Pageable pageable = PageRequest.of(paging.getPage() - 1, paging.getLimit());
-            Page<User> userPage = userRepository.findAll((root, query, cb) -> {
-                List<Predicate> predicates = new ArrayList<>();
-
-                // Add predicates using ternary operator to check conditions
-                predicates.add(StringUtils.hasLength(username) ?
-                        cb.like(cb.lower(root.get("username")), "%" + username.toLowerCase() + "%") : null);
-
-                predicates.add(StringUtils.hasLength(email) ?
-                        cb.like(cb.lower(root.get("email")), "%" + email.toLowerCase() + "%") : null);
-
-                predicates.add(StringUtils.hasLength(roleName) ?
-                        cb.like(cb.lower(root.get("role").get("name")), "%" + roleName.toLowerCase() + "%") : null);
-                // Always filter by bitDeletedFlag to exclude soft-deleted users
-                predicates.add(cb.equal(root.get("bitDeletedFlag"), 0)); // Only include users where bitDeletedFlag = 0
-
-                // Remove null predicates
-                predicates.removeIf(Objects::isNull);
-
-                return cb.and(predicates.toArray(new Predicate[0]));
-            }, pageable);
-
-            // Set the total count in Paging object
-            paging.setCount(userPage.getTotalElements());
-
-            // Collect User entities directly into a list
-            List<User> users = userPage.getContent();
-
-            // Create result map with users and pagination info
-            Map<String, Object> result = new HashMap<>();
-            result.put("users", users);
-            result.put("paging", paging);
-
-            // Create and return the ResponseObject
-            return new ResponseObject(result, "SUCCESS", HttpStatus.OK, "Users fetched successfully.");
-
-        } catch (IllegalArgumentException e) {
-            // Handle specific exception for illegal arguments
-            return new ResponseObject(null, "ERROR", HttpStatus.BAD_REQUEST, "Invalid input parameters: " + e.getMessage());
+            List<User> userList = userRepository.findAllActive();
+            return new ResponseObject(userList, "SUCCESS", HttpStatus.OK, "User fetched successfully");
         } catch (Exception e) {
-            // Handle generic exceptions
-            return new ResponseObject(null, "ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred: " + e.getMessage());
+            return new ResponseObject(null, "ERROR", HttpStatus.NOT_FOUND, "User not found");
         }
-
     }
+
+//    @Override
+//    public ResponseObject getAllUsers(Paging paging, String username, String email, String roleName) {
+//        try {
+//            Pageable pageable = PageRequest.of(paging.getPage() - 1, paging.getLimit());
+//            Page<User> userPage = userRepository.findAll((root, query, cb) -> {
+//                List<Predicate> predicates = new ArrayList<>();
+//
+//                // Add predicates using ternary operator to check conditions
+//                predicates.add(StringUtils.hasLength(username) ?
+//                        cb.like(cb.lower(root.get("username")), "%" + username.toLowerCase() + "%") : null);
+//
+//                predicates.add(StringUtils.hasLength(email) ?
+//                        cb.like(cb.lower(root.get("email")), "%" + email.toLowerCase() + "%") : null);
+//
+//                predicates.add(StringUtils.hasLength(roleName) ?
+//                        cb.like(cb.lower(root.get("role").get("name")), "%" + roleName.toLowerCase() + "%") : null);
+//                // Always filter by bitDeletedFlag to exclude soft-deleted users
+//                predicates.add(cb.equal(root.get("bitDeletedFlag"), 0)); // Only include users where bitDeletedFlag = 0
+//
+//                // Remove null predicates
+//                predicates.removeIf(Objects::isNull);
+//
+//                return cb.and(predicates.toArray(new Predicate[0]));
+//            }, pageable);
+//
+//            // Set the total count in Paging object
+//            paging.setCount(userPage.getTotalElements());
+//
+//            // Collect User entities directly into a list
+//            List<User> users = userPage.getContent();
+//
+//            // Create result map with users and pagination info
+//            Map<String, Object> result = new HashMap<>();
+//            result.put("users", users);
+//            result.put("paging", paging);
+//
+//            // Create and return the ResponseObject
+//            return new ResponseObject(result, "SUCCESS", HttpStatus.OK, "Users fetched successfully.");
+//
+//        } catch (IllegalArgumentException e) {
+//            // Handle specific exception for illegal arguments
+//            return new ResponseObject(null, "ERROR", HttpStatus.BAD_REQUEST, "Invalid input parameters: " + e.getMessage());
+//        } catch (Exception e) {
+//            // Handle generic exceptions
+//            return new ResponseObject(null, "ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred: " + e.getMessage());
+//        }
+//
+//    }
 
 	@Override
 	public Boolean sendOtp(String email) throws TennisException,MessagingException {
