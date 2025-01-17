@@ -3,6 +3,8 @@ package com.ifacehub.tennis.serviceImpl;
 import com.ifacehub.tennis.entity.Role;
 import com.ifacehub.tennis.entity.Session;
 import com.ifacehub.tennis.repository.SessionRepository;
+import com.ifacehub.tennis.repository.TennisRepository;
+import com.ifacehub.tennis.repository.UserRepository;
 import com.ifacehub.tennis.requestDto.SessionDto;
 import com.ifacehub.tennis.service.SessionService;
 import com.ifacehub.tennis.util.ResponseObject;
@@ -16,6 +18,10 @@ import java.util.List;
 public class SessionServiceImpl implements SessionService {
     @Autowired
     private SessionRepository sessionRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private TennisRepository  tennisRepository;
     @Override
     public ResponseObject createSession(SessionDto sessionDto) {
         try{
@@ -79,7 +85,24 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public ResponseObject getAllSession() {
         try {
-            List<Session> sessionList = sessionRepository.findAll();
+            List<Session> sessionList = sessionRepository.findAllByOrderByIdDesc();
+            sessionList.stream().forEach(session -> {
+                Long courseId = session.getCourseId();
+                Long coachId = session.getCoachId();
+                Long locationId = session.getLocationId();
+
+                // Retrieve Department by ID and set its name in Specialities
+                tennisRepository.findById(courseId)
+                        .ifPresent(course -> {
+                            session.setCategory(course.getCategory());
+                            session.setSubCategory(course.getSubcategory());
+                        });
+                userRepository.findById(coachId)
+                        .ifPresent(coach -> {
+                            String coachName = coach.getFirstName() + " " + coach.getLastName(); // Assuming firstName and lastName exist
+                            session.setCoachName(coachName); // Set coach name
+                        });
+            });
             return new ResponseObject(sessionList, "SUCCESS", HttpStatus.OK, "Session fetched successfully");
         } catch (Exception e) {
             return new ResponseObject(null, "ERROR", HttpStatus.NOT_FOUND, "Session not found");
