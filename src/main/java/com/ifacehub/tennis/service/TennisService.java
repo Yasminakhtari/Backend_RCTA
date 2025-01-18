@@ -1,6 +1,7 @@
 package com.ifacehub.tennis.service;
 
 import com.ifacehub.tennis.entity.Tennis;
+import com.ifacehub.tennis.responseDto.SessionResponseDto;
 import com.ifacehub.tennis.util.ResponseObject;
 
 import org.springframework.http.ResponseEntity;
@@ -30,4 +31,6 @@ public interface TennisService {
     List<String> getSubCategories(String group, String category);
     
     List<Tennis> getFilteredTennis(String group, String category, String subcategory);
+
+    SessionResponseDto getTennisDataWithSessions(Long id);
 }

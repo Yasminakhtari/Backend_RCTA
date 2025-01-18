@@ -3,6 +3,7 @@ package com.ifacehub.tennis.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ifacehub.tennis.entity.Tennis;
+import com.ifacehub.tennis.responseDto.SessionResponseDto;
 import com.ifacehub.tennis.service.TennisService;
 import com.ifacehub.tennis.serviceImpl.FileService;
 import com.ifacehub.tennis.util.ResponseObject;
@@ -128,5 +129,15 @@ public class TennisController {
     public ResponseEntity<List<Tennis>> getFilteredTennis(@RequestParam(required = false) String group,@RequestParam(required = false) String category,@RequestParam (required = false) String subcategory){
     		List<Tennis> filteredTennis = tennisService.getFilteredTennis(group, category, subcategory);
     	return new ResponseEntity<>(filteredTennis,HttpStatus.OK);
+    }
+
+    @GetMapping("/sessionDetail/{id}")
+    public ResponseEntity<SessionResponseDto> getTennisDataWithSessions(@PathVariable Long id) {
+        try {
+            SessionResponseDto response = tennisService.getTennisDataWithSessions(id);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.ifacehub.tennis.serviceImpl;
 
-import com.ifacehub.tennis.entity.Role;
 import com.ifacehub.tennis.entity.Session;
+import com.ifacehub.tennis.repository.LocationRepository;
 import com.ifacehub.tennis.repository.SessionRepository;
 import com.ifacehub.tennis.repository.TennisRepository;
 import com.ifacehub.tennis.repository.UserRepository;
@@ -22,6 +22,8 @@ public class SessionServiceImpl implements SessionService {
     private UserRepository userRepository;
     @Autowired
     private TennisRepository  tennisRepository;
+    @Autowired
+    private LocationRepository locationRepository;
     @Override
     public ResponseObject createSession(SessionDto sessionDto) {
         try{
@@ -101,6 +103,11 @@ public class SessionServiceImpl implements SessionService {
                         .ifPresent(coach -> {
                             String coachName = coach.getFirstName() + " " + coach.getLastName(); // Assuming firstName and lastName exist
                             session.setCoachName(coachName); // Set coach name
+                        });
+                locationRepository.findById(locationId)
+                        .ifPresent(location -> {
+                            String Location = location.getLocationName() + ", " + location.getAddress(); // Assuming firstName and lastName exist
+                            session.setLocationName(Location); // Set coach name
                         });
             });
             return new ResponseObject(sessionList, "SUCCESS", HttpStatus.OK, "Session fetched successfully");

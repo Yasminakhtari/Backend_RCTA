@@ -1,7 +1,11 @@
 package com.ifacehub.tennis.serviceImpl;
 
+import com.ifacehub.tennis.entity.Session;
 import com.ifacehub.tennis.entity.Tennis;
+import com.ifacehub.tennis.repository.SessionRepository;
 import com.ifacehub.tennis.repository.TennisRepository;
+import com.ifacehub.tennis.repository.UserRepository;
+import com.ifacehub.tennis.responseDto.SessionResponseDto;
 import com.ifacehub.tennis.service.TennisService;
 import com.ifacehub.tennis.util.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +24,10 @@ public class TennisServiceImpl implements TennisService {
     private FileService fileService;
     @Autowired
     private TennisRepository tennisRepository;
-
+    @Autowired
+    private SessionRepository sessionRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public ResponseObject createTennisService(Tennis tennis) {
@@ -239,6 +246,32 @@ public class TennisServiceImpl implements TennisService {
 		// TODO Auto-generated method stub
 		return tennisRepository.findFilteredTennis(group, category, subcategory);
 	}
+
+    @Override
+    public SessionResponseDto getTennisDataWithSessions(Long id) {
+        // Fetch tennis data by id
+        Optional<Tennis> tennisDataOpt = tennisRepository.findById(id);
+
+        if (tennisDataOpt.isPresent()) {
+            Tennis tennisData = tennisDataOpt.get();
+
+            // Fetch the sessions for the given courseId
+            List<Session> sessions = sessionRepository.findByCourseId(tennisData.getId());
+            sessions.stream().forEach(session -> {
+                Long coachId = session.getCoachId();
+                userRepository.findById(coachId)
+                        .ifPresent(coach -> {
+                            String coachName = coach.getFirstName() + " " + coach.getLastName(); // Assuming firstName and lastName exist
+                            session.setCoachName(coachName); // Set coach name
+                        });
+                    });
+
+            // Return the response object
+            return new SessionResponseDto(tennisData, sessions);
+        } else {
+            throw new RuntimeException("Tennis data not found for id: " + id);
+        }
+    }
 
 }
 
