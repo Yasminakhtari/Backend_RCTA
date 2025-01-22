@@ -42,7 +42,7 @@ public class SessionController {
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
-    // Delete
+    // GetAll
     @GetMapping
     public ResponseEntity<ResponseObject> getAllSession() {
         ResponseObject response = sessionService.getAllSession();
