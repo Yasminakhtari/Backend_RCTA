@@ -31,6 +31,8 @@ public class User extends Auditable<String>{
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+    private String mobileNo;
+    private String address;
 
     public static User toEntity(UserDto userDto) {
         return Utils.mapper().convertValue(userDto, User.class);

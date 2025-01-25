@@ -153,6 +153,8 @@ public class UserServiceImpl implements UserService {
             existingUser.setEmail(updatedUser.getEmail());
             existingUser.setFirstName(updatedUser.getFirstName());
             existingUser.setLastName(updatedUser.getLastName());
+            existingUser.setMobileNo(updatedUser.getMobileNo());
+            existingUser.setAddress(updatedUser.getAddress());
             existingUser.setUpdatedOn(LocalDateTime.now());
             existingUser.setUpdatedBy(String.valueOf(1)); // Hardcoded for now, can be updated based on the logged-in user
 
