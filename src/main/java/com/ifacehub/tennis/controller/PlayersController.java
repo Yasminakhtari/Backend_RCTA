@@ -50,8 +50,9 @@ public class PlayersController {
     // Delete
     @DeleteMapping
     public ResponseEntity<ResponseObject> deletePlayers(
-            @RequestParam Long id) {
-        ResponseObject response = playerService.deletePlayers(id);
+            @RequestParam Long id,
+            @RequestParam String reason) {
+        ResponseObject response = playerService.deletePlayers(id,reason);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 }
