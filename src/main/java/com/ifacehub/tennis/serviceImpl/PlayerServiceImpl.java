@@ -19,6 +19,7 @@ public class PlayerServiceImpl implements PlayerService {
     public ResponseObject createPlayers(PlayersDto playersDto) {
         try{
             Players players = Players.toEntity(playersDto);
+            players.setBitDeletedFlag((byte) 0);
             Players savedPlayers = playersRepository.save(players);
             return new ResponseObject(savedPlayers, "SUCCESS", HttpStatus.OK, "Players saved successfully");
         } catch (Exception e){
@@ -59,7 +60,7 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public ResponseObject getAllPlayersByUserId(Long userId) {
         try {
-            List<Players> playersList = playersRepository.findByUserIdOrderByIdDesc(userId);
+            List<Players> playersList = playersRepository.findByUserIdAndBitDeletedFlagOrderByIdDesc(userId,(byte) 0);
 
             return new ResponseObject(playersList, "SUCCESS", HttpStatus.OK, "Players fetched successfully");
         } catch (Exception e) {
@@ -68,12 +69,14 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public ResponseObject deletePlayers(Long id) {
+    public ResponseObject deletePlayers(Long id,String reason) {
         try {
-            Players players = playersRepository.findById(id)
+            Players players = playersRepository.findByIdAndBitDeletedFlag(id,(byte) 0)
                     .orElseThrow(() -> new RuntimeException("Player not found with ID: " + id));
-            playersRepository.delete(players);
-            return new ResponseObject(null, "SUCCESS", HttpStatus.OK, "Players deleted successfully");
+            players.setBitDeletedFlag((byte) 1);
+            players.setRemoveReason(reason);
+            playersRepository.save(players);
+            return new ResponseObject(players, "SUCCESS", HttpStatus.OK, "Players deleted successfully");
         } catch (Exception e) {
             return new ResponseObject(HttpStatus.NOT_FOUND, "ERROR", "Failed to delete players: " + e.getMessage());
         }

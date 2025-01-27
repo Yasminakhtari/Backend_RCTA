@@ -2,6 +2,7 @@ package com.ifacehub.tennis.serviceImpl;
 
 import com.ifacehub.tennis.entity.Session;
 import com.ifacehub.tennis.entity.Tennis;
+import com.ifacehub.tennis.repository.LocationRepository;
 import com.ifacehub.tennis.repository.SessionRepository;
 import com.ifacehub.tennis.repository.TennisRepository;
 import com.ifacehub.tennis.repository.UserRepository;
@@ -28,6 +29,8 @@ public class TennisServiceImpl implements TennisService {
     private SessionRepository sessionRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private LocationRepository locationRepository;
 
     @Override
     public ResponseObject createTennisService(Tennis tennis) {
@@ -259,10 +262,17 @@ public class TennisServiceImpl implements TennisService {
             List<Session> sessions = sessionRepository.findByCourseId(tennisData.getId());
             sessions.stream().forEach(session -> {
                 Long coachId = session.getCoachId();
+                Long locationId = session.getLocationId();
                 userRepository.findById(coachId)
                         .ifPresent(coach -> {
                             String coachName = coach.getFirstName() + " " + coach.getLastName(); // Assuming firstName and lastName exist
                             session.setCoachName(coachName); // Set coach name
+                        });
+
+                locationRepository.findById(locationId)
+                        .ifPresent(location -> {
+                            String Location = location.getLocationName() + ", " + location.getAddress(); // Assuming firstName and lastName exist
+                            session.setLocationName(Location); // Set coach name
                         });
                     });
 

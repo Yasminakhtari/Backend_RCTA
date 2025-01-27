@@ -25,6 +25,8 @@ public class Players {
     private Integer age;
     private String batch;
     private String status;
+    private String removeReason;
+    private Byte bitDeletedFlag;
 
     public static Players toEntity(PlayersDto playersDto) {
         return Utils.mapper().convertValue(playersDto, Players.class);

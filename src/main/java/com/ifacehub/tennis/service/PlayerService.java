@@ -14,5 +14,5 @@ public interface PlayerService {
 
     ResponseObject getAllPlayersByUserId(Long userId);
 
-    ResponseObject deletePlayers(Long id);
+    ResponseObject deletePlayers(Long id,String reason);
 }
