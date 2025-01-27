@@ -22,6 +22,7 @@ public class PlayerServiceImpl implements PlayerService {
             Players savedPlayers = playersRepository.save(players);
             return new ResponseObject(savedPlayers, "SUCCESS", HttpStatus.OK, "Players saved successfully");
         } catch (Exception e){
+        	e.printStackTrace();
             return new ResponseObject(HttpStatus.BAD_REQUEST, "ERROR", "Failed to saved player: " + e.getMessage());
         }
     }
