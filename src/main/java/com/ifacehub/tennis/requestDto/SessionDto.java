@@ -23,5 +23,8 @@ public class SessionDto {
 //    private DateRangeDto dateRange;
     private Date fromDate;
     private Date toDate;
+    private Long userId;
+    private List<Long> playersId;
+    private String status;             // Status (e.g., "Active", "Inactive")
 }
 

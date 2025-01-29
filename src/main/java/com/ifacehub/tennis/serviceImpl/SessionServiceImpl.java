@@ -65,6 +65,11 @@ public class SessionServiceImpl implements SessionService {
             existingSession.setPrice(sessionDto.getPrice());
             existingSession.setLocationId(sessionDto.getLocationId());
 
+            existingSession.setUserId(sessionDto.getUserId()); // Assuming you add a userId field to Session
+            existingSession.setPlayersId(sessionDto.getPlayersId()); // Assuming this is a List<Long>
+            existingSession.setStatus(sessionDto.getStatus()); // Assuming a String or Enum for status
+
+
             Session updatedSession = sessionRepository.save(existingSession);
             return new ResponseObject(updatedSession, "SUCCESS", HttpStatus.OK, "Session updated successfully");
         } catch (Exception e) {
