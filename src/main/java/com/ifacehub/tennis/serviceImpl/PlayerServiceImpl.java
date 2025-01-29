@@ -1,7 +1,9 @@
 package com.ifacehub.tennis.serviceImpl;
 
 import com.ifacehub.tennis.entity.Players;
+import com.ifacehub.tennis.entity.Session;
 import com.ifacehub.tennis.repository.PlayersRepository;
+import com.ifacehub.tennis.repository.SessionRepository;
 import com.ifacehub.tennis.requestDto.PlayersDto;
 import com.ifacehub.tennis.service.PlayerService;
 import com.ifacehub.tennis.util.ResponseObject;
@@ -9,11 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class PlayerServiceImpl implements PlayerService {
     @Autowired
     private PlayersRepository playersRepository;
+    @Autowired
+    private SessionRepository sessionRepository;
 
     @Override
     public ResponseObject createPlayers(PlayersDto playersDto) {
@@ -30,14 +37,32 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public ResponseObject getPlayersById(Long id) {
+//        try {
+//            Players players = playersRepository.findById(id)
+//                    .orElseThrow(() -> new RuntimeException("Players not found with ID: " + id));
+//            return new ResponseObject(players, "SUCCESS", HttpStatus.OK, "Players fetched successfully");
+//        } catch (Exception e) {
+//            return new ResponseObject(HttpStatus.NOT_FOUND, "ERROR", "Failed to fetch players: " + e.getMessage());
+//        }
         try {
-            Players players = playersRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Players not found with ID: " + id));
-            return new ResponseObject(players, "SUCCESS", HttpStatus.OK, "Players fetched successfully");
+            // Fetch player by ID
+            Players player = playersRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Player not found with ID: " + id));
+
+            // Fetch sessions where the player is part of
+            List<Session> sessions = sessionRepository.findSessionsByPlayersId(id);
+
+            // Combine player and session data
+            Map<String, Object> response = new HashMap<>();
+            response.put("player", player);
+            response.put("sessions", sessions);
+
+            return new ResponseObject(response, "SUCCESS", HttpStatus.OK, "Player and sessions fetched successfully");
         } catch (Exception e) {
-            return new ResponseObject(HttpStatus.NOT_FOUND, "ERROR", "Failed to fetch players: " + e.getMessage());
+            return new ResponseObject(HttpStatus.BAD_REQUEST, "ERROR", "Failed to fetch data: " + e.getMessage());
         }
     }
+
 
     @Override
     public ResponseObject updatePlayers(Long id, PlayersDto playersDto) {

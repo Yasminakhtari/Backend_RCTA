@@ -33,6 +33,9 @@ public class Session {
     private int maxCapacity;
     private int maxWaitingCapacity;
     private double price;
+    private Long userId;
+    private List<Long> playersId;
+    private String status;             // Status (e.g., "Inprogress", "Completed")
     @Transient
     private String coachName;
     @Transient
