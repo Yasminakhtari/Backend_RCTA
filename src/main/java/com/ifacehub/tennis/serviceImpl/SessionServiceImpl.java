@@ -90,9 +90,16 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public ResponseObject getAllSession() {
+    public ResponseObject getAllSession(Long userId) {
         try {
-            List<Session> sessionList = sessionRepository.findAllByOrderByIdDesc();
+            List<Session> sessionList;
+            if(userId==0){
+                sessionList =sessionRepository.findAllByOrderByIdDesc();
+            }
+            else{
+                sessionList =sessionRepository.findByUserIdOrderByIdDesc(userId);
+            }
+
             sessionList.stream().forEach(session -> {
                 Long courseId = session.getCourseId();
                 Long coachId = session.getCoachId();

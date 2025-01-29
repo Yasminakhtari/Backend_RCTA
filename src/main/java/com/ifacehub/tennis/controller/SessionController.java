@@ -44,8 +44,10 @@ public class SessionController {
 
     // GetAll
     @GetMapping
-    public ResponseEntity<ResponseObject> getAllSession() {
-        ResponseObject response = sessionService.getAllSession();
+    public ResponseEntity<ResponseObject> getAllSession(
+            @RequestParam(name = "userId", defaultValue = "0") Long userId
+    ) {
+        ResponseObject response = sessionService.getAllSession(userId);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 }

@@ -15,4 +15,6 @@ public interface SessionRepository extends JpaRepository<Session,Long> {
 
     @Query(value = "SELECT * FROM session s WHERE :id = ANY (s.players_id)", nativeQuery = true)
     List<Session> findSessionsByPlayersId(Long id);
+
+    List<Session> findByUserIdOrderByIdDesc(Long userId);
 }

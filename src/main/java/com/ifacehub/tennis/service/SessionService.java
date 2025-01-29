@@ -12,5 +12,5 @@ public interface SessionService {
 
     ResponseObject deleteSession(Long id);
 
-    ResponseObject getAllSession();
+    ResponseObject getAllSession(Long userId);
 }
