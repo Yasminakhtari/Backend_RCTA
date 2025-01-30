@@ -169,11 +169,6 @@ public class UserServiceImpl implements UserService {
                             : existingUser.getRole()
             );
             
-         // Update the picture if provided
-//            if (updatedUser.getPicture() != null && !updatedUser.getPicture().isEmpty()) {
-//                existingUser.setPicture(updatedUser.getPicture());
-//            }
-//
 
 
             // Save updated user
