@@ -33,6 +33,7 @@ public class User extends Auditable<String>{
     private Role role;
     private String mobileNo;
     private String address;
+    private String profile;
 
     public static User toEntity(UserDto userDto) {
         return Utils.mapper().convertValue(userDto, User.class);

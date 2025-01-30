@@ -272,7 +272,7 @@ public class TennisServiceImpl implements TennisService {
                 locationRepository.findById(locationId)
                         .ifPresent(location -> {
                             String Location = location.getLocationName() + ", " + location.getAddress(); // Assuming firstName and lastName exist
-                            session.setLocationName(Location); // Set coach name
+                            session.setLocationName(Location); // Set location name
                         });
                     });
 

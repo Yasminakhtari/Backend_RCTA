@@ -68,7 +68,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseObject saveUser(UserDto userDTO) throws TennisException {
         try {
-            User user = User.toEntity(userDTO);
+        	User user = 	User.toEntity(userDTO); 
+        	
+        	//User user = Utils.mapper().convertValue(userDTO, User.class);//so
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setBitDeletedFlag((byte) 0);
             user.setCreatedBy(String.valueOf(1));
@@ -155,6 +157,7 @@ public class UserServiceImpl implements UserService {
             existingUser.setLastName(updatedUser.getLastName());
             existingUser.setMobileNo(updatedUser.getMobileNo());
             existingUser.setAddress(updatedUser.getAddress());
+            existingUser.setProfile(updatedUser.getProfile());
             existingUser.setUpdatedOn(LocalDateTime.now());
             existingUser.setUpdatedBy(String.valueOf(1)); // Hardcoded for now, can be updated based on the logged-in user
 
@@ -165,6 +168,12 @@ public class UserServiceImpl implements UserService {
                                     .orElseThrow(() -> new RuntimeException("Role not found"))
                             : existingUser.getRole()
             );
+            
+         // Update the picture if provided
+//            if (updatedUser.getPicture() != null && !updatedUser.getPicture().isEmpty()) {
+//                existingUser.setPicture(updatedUser.getPicture());
+//            }
+//
 
 
             // Save updated user
