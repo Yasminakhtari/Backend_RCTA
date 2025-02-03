@@ -10,7 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +32,11 @@ public class Order {
     private String paymentStatus;
     @Column(columnDefinition = "TEXT")
     private String items; // Store as JSON string
+    private LocalDateTime createdOn;
+    @Transient
+    private String userName;
+    @Transient
+    private String mobileNo;
 
 
     private static final ObjectMapper objectMapper = new ObjectMapper();  // ObjectMapper to handle JSON

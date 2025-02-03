@@ -3,6 +3,7 @@ package com.ifacehub.tennis.serviceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ifacehub.tennis.entity.Order;
 import com.ifacehub.tennis.repository.OrderRepository;
+import com.ifacehub.tennis.repository.UserRepository;
 import com.ifacehub.tennis.requestDto.OrderDto;
 import com.ifacehub.tennis.service.OrderService;
 import com.ifacehub.tennis.util.ResponseObject;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -24,6 +26,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public ResponseObject saveOrder(OrderDto orderDto) {
@@ -63,8 +68,9 @@ public class OrderServiceImpl implements OrderService {
                 order = Order.toEntity(orderDto);
                 order.setPaymentStatus("Pending"); // Default payment status is 'Pending'
                 order.setItems(orderDto.getItems().toString()); // Directly set the items list
+                order.setCreatedOn(LocalDateTime.now());
             } else {
-                // Existing order found, check payment status and update items
+                    // Existing order found, check payment status and update items
                 order = existingOrders.get(0); // Use the first found order
 
                 // If payment status is still 'Pending', update the order
@@ -81,12 +87,14 @@ public class OrderServiceImpl implements OrderService {
                     order.setPaymentMethod(orderDto.getPaymentMethod());
                     order.setTotal(orderDto.getTotal());
                     order.setPaymentStatus("Pending"); // Mark as 'Success'
+                    order.setCreatedOn(LocalDateTime.now());
                 }
                 else if ("Success".equals(order.getPaymentStatus())) {
                     // If order is already 'Success', create a new order
                     order = Order.toEntity(orderDto);
                     order.setPaymentStatus("Pending"); // New order starts with 'Pending'
                     order.setItems(orderDto.getItems().toString()); // Set new items
+                    order.setCreatedOn(LocalDateTime.now());
                 }
 //                else {
 //                    return new ResponseObject(HttpStatus.BAD_REQUEST, "ERROR", "Order is already processed or paid");
@@ -99,6 +107,26 @@ public class OrderServiceImpl implements OrderService {
             return new ResponseObject(savedOrder, "SUCCESS", HttpStatus.OK, "Order saved successfully");
         } catch (Exception e) {
             return new ResponseObject(HttpStatus.BAD_REQUEST, "ERROR", "Failed to save order: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseObject getAllOrder() {
+        try {
+            List<Order> orderList = orderRepository.findAllByOrderByIdDesc();
+            orderList.stream().forEach(order -> {
+                Long userId = order.getUserId();
+                userRepository.findById(userId)
+                        .ifPresent(orders -> {
+                            String fullName = orders.getFirstName() + " " + orders.getLastName(); // Assuming firstName and lastName exist
+                            order.setUserName(fullName);
+                            order.setMobileNo(orders.getMobileNo());
+                        });
+            });
+
+            return new ResponseObject(orderList, "SUCCESS", HttpStatus.OK, "Location fetched successfully");
+        } catch (Exception e) {
+            return new ResponseObject(null, "ERROR", HttpStatus.NOT_FOUND, "Location not found");
         }
     }
 

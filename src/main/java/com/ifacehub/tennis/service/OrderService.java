@@ -5,4 +5,6 @@ import com.ifacehub.tennis.util.ResponseObject;
 
 public interface OrderService {
     ResponseObject saveOrder(OrderDto orderDto);
+
+    ResponseObject getAllOrder();
 }
