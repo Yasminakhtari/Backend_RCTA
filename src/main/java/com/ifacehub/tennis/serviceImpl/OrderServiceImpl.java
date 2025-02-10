@@ -69,6 +69,7 @@ public class OrderServiceImpl implements OrderService {
                 order.setPaymentStatus("Pending"); // Default payment status
                 order.setItems(orderDto.getItems().toString()); // Store items
                 order.setCreatedOn(LocalDateTime.now());
+                order.setUpdatedBy(String.valueOf(orderDto.getUserId()));
             } else {
                 // 🔹 Step 4: Try to find an existing 'Pending' order
                 order = existingOrders.stream()
@@ -88,7 +89,8 @@ public class OrderServiceImpl implements OrderService {
                     order.setItems(updatedItems.toString());
                     order.setPaymentMethod(orderDto.getPaymentMethod());
                     order.setTotal(orderDto.getTotal());
-                    order.setCreatedOn(LocalDateTime.now());  // ✅ Update timestamp
+                    order.setUpdatedOn(LocalDateTime.now());
+                    order.setUpdatedBy(String.valueOf(orderDto.getUserId()));
                 } else {
                     // 🔹 Step 5: No 'Pending' order found, check for 'Success' orders
                     order = existingOrders.get(0);
@@ -99,6 +101,7 @@ public class OrderServiceImpl implements OrderService {
                         order.setPaymentStatus("Pending"); // New order starts as 'Pending'
                         order.setItems(orderDto.getItems().toString());
                         order.setCreatedOn(LocalDateTime.now());
+                        order.setCreatedBy(String.valueOf(orderDto.getUserId()));
                     }
                 }
             }
