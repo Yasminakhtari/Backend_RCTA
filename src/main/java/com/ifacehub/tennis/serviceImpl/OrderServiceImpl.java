@@ -63,42 +63,44 @@ public class OrderServiceImpl implements OrderService {
             List<Order> existingOrders = orderRepository.findByUserId(orderDto.getUserId());
 
 
+            // 🔹 Step 3: If no existing order, create a new one
             if (existingOrders.isEmpty()) {
-                // No existing order found, create a new one
                 order = Order.toEntity(orderDto);
-                order.setPaymentStatus("Pending"); // Default payment status is 'Pending'
-                order.setItems(orderDto.getItems().toString()); // Directly set the items list
+                order.setPaymentStatus("Pending"); // Default payment status
+                order.setItems(orderDto.getItems().toString()); // Store items
                 order.setCreatedOn(LocalDateTime.now());
             } else {
-                    // Existing order found, check payment status and update items
-                order = existingOrders.get(0); // Use the first found order
+                // 🔹 Step 4: Try to find an existing 'Pending' order
+                order = existingOrders.stream()
+                        .filter(o -> "Pending".equals(o.getPaymentStatus()))
+                        .findFirst()
+                        .orElse(null);
 
-                // If payment status is still 'Pending', update the order
-                if ("Pending".equals(order.getPaymentStatus())) {
-                    // Compare the existing items with the new items
+                if (order != null) {
+                    // ✅ Found a Pending order, update it
                     List<Map<String, Object>> existingItems = order.getItemsList();
                     List<Map<String, Object>> newItems = orderDto.getItems();
 
-                    // Check for item differences (items added/removed/updated)
+                    // 🔹 Check for item differences
                     List<Map<String, Object>> updatedItems = compareItems(existingItems, newItems);
 
-                    // Update the items list and payment details
-                    order.setItems(updatedItems.toString());  // Directly set updated items list
+                    // 🔹 Update order details
+                    order.setItems(updatedItems.toString());
                     order.setPaymentMethod(orderDto.getPaymentMethod());
                     order.setTotal(orderDto.getTotal());
-                    order.setPaymentStatus("Pending"); // Mark as 'Success'
-                    order.setCreatedOn(LocalDateTime.now());
+                    order.setCreatedOn(LocalDateTime.now());  // ✅ Update timestamp
+                } else {
+                    // 🔹 Step 5: No 'Pending' order found, check for 'Success' orders
+                    order = existingOrders.get(0);
+
+                    if ("Success".equals(order.getPaymentStatus())) {
+                        // ✅ If all existing orders are 'Success', create a new one
+                        order = Order.toEntity(orderDto);
+                        order.setPaymentStatus("Pending"); // New order starts as 'Pending'
+                        order.setItems(orderDto.getItems().toString());
+                        order.setCreatedOn(LocalDateTime.now());
+                    }
                 }
-                else if ("Success".equals(order.getPaymentStatus())) {
-                    // If order is already 'Success', create a new order
-                    order = Order.toEntity(orderDto);
-                    order.setPaymentStatus("Pending"); // New order starts with 'Pending'
-                    order.setItems(orderDto.getItems().toString()); // Set new items
-                    order.setCreatedOn(LocalDateTime.now());
-                }
-//                else {
-//                    return new ResponseObject(HttpStatus.BAD_REQUEST, "ERROR", "Order is already processed or paid");
-//                }
             }
 
             // Save the updated or new order
