@@ -22,7 +22,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain=true)
-public class Order {
+public class Order extends Auditable<String>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +32,6 @@ public class Order {
     private String paymentStatus;
     @Column(columnDefinition = "TEXT")
     private String items; // Store as JSON string
-    private LocalDateTime createdOn;
     @Transient
     private String userName;
     @Transient
