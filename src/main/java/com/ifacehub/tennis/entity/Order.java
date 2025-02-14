@@ -1,6 +1,7 @@
 package com.ifacehub.tennis.entity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.ifacehub.tennis.requestDto.OrderDto;
@@ -63,9 +64,9 @@ public class Order extends Auditable<String>{
     public List<Map<String, Object>> getItemsList() {
         try {
             if (this.items != null) {
+                ObjectMapper objectMapper = new ObjectMapper();
                 // Deserialize JSON string back to List<Map<String, Object>>
-                return objectMapper.readValue(this.items, TypeFactory.defaultInstance().constructCollectionType(List.class, Map.class));
-            }
+                return objectMapper.readValue(this.items, new TypeReference<List<Map<String, Object>>>() {});            }
         } catch (JsonProcessingException e) {
             e.printStackTrace();  // Log the error
         }

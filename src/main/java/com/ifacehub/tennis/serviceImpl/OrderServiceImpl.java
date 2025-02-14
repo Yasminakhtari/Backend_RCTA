@@ -38,18 +38,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseObject saveOrder(OrderDto orderDto) {
-//        try {
-//            Order order = Order.toEntity(orderDto);
-////            String itemsJson = objectMapper.writeValueAsString(orderDto.getItems());
-////            order.setItems(itemsJson);
-//            order.setPaymentStatus("Pending");
-//            Order savedOrder = orderRepository.save(order);
-//            return new ResponseObject(savedOrder, "SUCCESS", HttpStatus.OK, "Order saved successfully");
-//        }
-//        catch (Exception e){
-//            return new ResponseObject(HttpStatus.BAD_REQUEST, "ERROR", "Failed to saved order: " + e.getMessage());
-//        }
+
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
             Order order;
             // If orderId is provided, find the order and update status to "Success"
             if (orderDto.getOrderId() != null) {
@@ -73,7 +64,9 @@ public class OrderServiceImpl implements OrderService {
             if (existingOrders.isEmpty()) {
                 order = Order.toEntity(orderDto);
                 order.setPaymentStatus("Pending"); // Default payment status
-                order.setItems(orderDto.getItems().toString()); // Store items
+                String itemsJson = objectMapper.writeValueAsString(orderDto.getItems());
+                order.setItems(itemsJson);
+//                order.setItems(orderDto.getItems().toString()); // Store items
                 order.setCreatedOn(LocalDateTime.now());
                 order.setUpdatedBy(String.valueOf(orderDto.getUserId()));
             } else {
@@ -84,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
                         .orElse(null);
 
                 if (order != null) {
-                    // ✅ Found a Pending order, update it
+                    //Found a Pending order, update it
                     List<Map<String, Object>> existingItems = order.getItemsList();
                     List<Map<String, Object>> newItems = orderDto.getItems();
 
@@ -92,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
                     List<Map<String, Object>> updatedItems = compareItems(existingItems, newItems);
 
                     // 🔹 Update order details
-                    order.setItems(updatedItems.toString());
+                    order.setItems(objectMapper.writeValueAsString(updatedItems));
                     order.setPaymentMethod(orderDto.getPaymentMethod());
                     order.setTotal(orderDto.getTotal());
                     order.setUpdatedOn(LocalDateTime.now());
@@ -102,10 +95,11 @@ public class OrderServiceImpl implements OrderService {
                     order = existingOrders.get(0);
 
                     if ("Success".equals(order.getPaymentStatus())) {
-                        // ✅ If all existing orders are 'Success', create a new one
+                        //  If all existing orders are 'Success', create a new one
                         order = Order.toEntity(orderDto);
                         order.setPaymentStatus("Pending"); // New order starts as 'Pending'
-                        order.setItems(orderDto.getItems().toString());
+//                        order.setItems(orderDto.getItems().toString());
+                        order.setItems(objectMapper.writeValueAsString(orderDto.getItems()));
                         order.setCreatedOn(LocalDateTime.now());
                         order.setCreatedBy(String.valueOf(orderDto.getUserId()));
                     }
