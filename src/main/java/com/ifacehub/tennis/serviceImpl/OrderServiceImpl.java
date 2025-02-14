@@ -2,9 +2,12 @@ package com.ifacehub.tennis.serviceImpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ifacehub.tennis.entity.Order;
+import com.ifacehub.tennis.entity.ShippingAddress;
 import com.ifacehub.tennis.repository.OrderRepository;
+import com.ifacehub.tennis.repository.ShippingAddressRepository;
 import com.ifacehub.tennis.repository.UserRepository;
 import com.ifacehub.tennis.requestDto.OrderDto;
+import com.ifacehub.tennis.requestDto.OrderRequestDto;
 import com.ifacehub.tennis.service.OrderService;
 import com.ifacehub.tennis.util.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private ShippingAddressRepository shippingAddressRepository;
 
     @Override
     public ResponseObject saveOrder(OrderDto orderDto) {
@@ -151,4 +157,74 @@ public class OrderServiceImpl implements OrderService {
 
         return updatedItems;
     }
+
+	@Override
+	public ResponseObject saveShippingAddress(OrderRequestDto shippingDto) {
+	    try {
+	    	if (shippingDto.getUserId() == null || shippingDto.getUserId() <= 0) {
+	            return new ResponseObject(null, "ERROR", HttpStatus.BAD_REQUEST, "Valid User ID is required");
+	        }
+	        if (shippingDto.getOrderId() == null || shippingDto.getOrderId() <= 0) {
+	            return new ResponseObject(null, "ERROR", HttpStatus.BAD_REQUEST, "Valid Order ID is required");
+	        }
+	     // Map DTO to Entity
+	        ShippingAddress shippingAddress = new ShippingAddress();
+	        shippingAddress.setUserId(shippingDto.getUserId());
+	        shippingAddress.setOrderId(shippingDto.getOrderId());
+	        shippingAddress.setName(shippingDto.getName());
+	        shippingAddress.setEmail(shippingDto.getEmail().toLowerCase());
+	        shippingAddress.setPhone(shippingDto.getPhone().replace("-", ""));
+	        shippingAddress.setAddressLine1(shippingDto.getAddressLine1()); 
+	        shippingAddress.setAddressLine2(shippingDto.getAddressLine2()); 
+	        shippingAddress.setCity(shippingDto.getCity());
+	        shippingAddress.setState(shippingDto.getState());
+	        shippingAddress.setZipCode(shippingDto.getZipCode().replace("-", ""));
+
+	       
+	        ShippingAddress savedAddress = shippingAddressRepository.save(shippingAddress);
+	        return new ResponseObject(savedAddress, "SUCCESS", HttpStatus.OK, "Shipping Address Saved Successfully");
+
+	    } catch (Exception e) {
+	        e.printStackTrace(); 
+	        return new ResponseObject(null, "ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save Shipping Address: " + e.getMessage());
+	    }
+	}
+	
+	
+	@Override
+	public ResponseObject getShippingAddressByOrderId(Long orderId) {
+	    try {
+	        if (orderId == null || orderId <= 0) {
+	            return new ResponseObject(null,"ERROR", HttpStatus.BAD_REQUEST, "Valid Order ID required");
+	        }
+	        
+	        List<ShippingAddress> addresses = shippingAddressRepository.findByOrderId(orderId);
+	        if (addresses.isEmpty()) {
+	            return new ResponseObject(null,"ERROR", HttpStatus.NOT_FOUND, "No shipping address found for order ID: " + orderId);
+	        }
+	        
+	        return new ResponseObject(addresses, "SUCCESS", HttpStatus.OK,"Shipping Adress By Id fetch sucessfully");
+	    } catch (Exception e) {
+	        return new ResponseObject(null,"ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch address: " + e.getMessage());
+	    }
+	}
+
+	@Override
+	public ResponseObject getShippingAddressByUserId(Long userId) {
+	    try {
+	        if (userId == null || userId <= 0) {
+	            return new ResponseObject(null,"ERROR", HttpStatus.BAD_REQUEST, "Valid User ID required");
+	        }
+	        
+	        List<ShippingAddress> addresses = shippingAddressRepository.findByUserId(userId);
+	        if (addresses.isEmpty()) {
+	            return new ResponseObject(null,"ERROR", HttpStatus.NOT_FOUND, "No addresses found for user ID: " + userId);
+	        }
+	        
+	        return new ResponseObject(addresses, "SUCCESS", HttpStatus.OK,"Get Shipping Adress by userId fetch sucessfully");
+	    } catch (Exception e) {
+	        return new ResponseObject(null,"ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch addresses: " + e.getMessage());
+	    }
+	}
+
 }

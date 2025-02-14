@@ -1,5 +1,8 @@
 package com.ifacehub.tennis.entity;
 
+import com.ifacehub.tennis.requestDto.OrderRequestDto;
+import com.ifacehub.tennis.util.Utils;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,11 +24,15 @@ public class ShippingAddress extends Auditable<Long> {
 	private String name;
     private String email;
     private String phone;
-	private String locality;
-	private String address;
-	private String city;
-	private String state;
-	private String pinCode;
-	private String country;
-	private String mobile;
+    private String addressLine1; 
+    private String addressLine2; 
+    private String city;
+    private String state;
+    private String zipCode;
+	
+	
+	
+	public static ShippingAddress toEntity(OrderRequestDto shippingDto) {
+		return Utils.mapper().convertValue(shippingDto,ShippingAddress.class);
+	}
 }
