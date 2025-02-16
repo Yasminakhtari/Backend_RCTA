@@ -56,7 +56,8 @@ public class SecurityConfig {
                         "/api/players/**",
                         "/api/order/**",
                         "/api/t_session/**",
-                        "/api/testimonial/**").permitAll()
+                        "/api/testimonial/**",
+                        "/api/notification/**").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/api/**")
                 .authenticated().and()
