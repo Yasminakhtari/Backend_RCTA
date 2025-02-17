@@ -1,6 +1,7 @@
 package com.ifacehub.tennis.controller;
 
 import com.ifacehub.tennis.requestDto.LocationDto;
+import com.ifacehub.tennis.responseDto.NotificationResponseDto;
 import com.ifacehub.tennis.service.NotificationService;
 import com.ifacehub.tennis.util.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +23,21 @@ public class NotificationController {
                                                            @RequestParam String toDate){
         ResponseObject response = notificationService.saveNotification(sessionId,fromDate,toDate);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    // ✅ Get notifications for a specific user
+    @GetMapping("/user")
+    public ResponseEntity<NotificationResponseDto> getNotificationsForUser(@RequestParam Long userId) {
+        NotificationResponseDto response = notificationService.getNotificationsForUser(userId);
+        if (response == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    // ✅ Mark notification as read for a specific user
+    @PutMapping("/update")
+    public ResponseEntity<String> markNotificationAsRead(@RequestParam Long notificationId, @RequestParam Long userId) {
+        notificationService.markNotificationAsRead(notificationId, userId);
+        return ResponseEntity.ok("Notification marked as read for user " + userId);
     }
 }
