@@ -24,7 +24,7 @@ public class NotificationController {
         ResponseObject response = notificationService.saveNotification(sessionId,fromDate,toDate);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    // ✅ Get notifications for a specific user
+    //  Get notifications for a specific user
     @GetMapping("/user")
     public ResponseEntity<NotificationResponseDto> getNotificationsForUser(@RequestParam Long userId) {
         NotificationResponseDto response = notificationService.getNotificationsForUser(userId);
@@ -34,7 +34,7 @@ public class NotificationController {
         return ResponseEntity.ok(response);
     }
 
-    // ✅ Mark notification as read for a specific user
+    //  Mark notification as read for a specific user
     @PutMapping("/update")
     public ResponseEntity<String> markNotificationAsRead(@RequestParam Long notificationId, @RequestParam Long userId) {
         notificationService.markNotificationAsRead(notificationId, userId);

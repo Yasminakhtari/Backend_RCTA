@@ -62,13 +62,13 @@ public class NotificationServiceImpl implements NotificationService {
                     "No users found for session ID: " + sessionId);
         }
 
-        // ✅ Create a new Notification
+        //  Create a new Notification
         Notification notification = new Notification();
         notification.setCreatedOn(LocalDateTime.now());
         notification.setMessage("Please send Feedback");
         notification.setStatus("SENT");
 
-        // ✅ Create NotificationUsers entries for each user
+        //  Create NotificationUsers entries for each user
         List<NotificationUsers> notificationUserList = new ArrayList<>();
         for (Long userId : userIds) {
             NotificationUsers notificationUser = new NotificationUsers();
@@ -80,17 +80,17 @@ public class NotificationServiceImpl implements NotificationService {
             notificationUserList.add(notificationUser);
         }
 
-        // ✅ Associate users with the notification
+        //  Associate users with the notification
         notification.setNotificationUsers(notificationUserList);
         notificationRepository.save(notification);
 
-        // ✅ Build response using Map
+        //  Build response using Map
         Map<String, Object> response = new HashMap<>();
         response.put("notificationId", notification.getId());
         response.put("message", notification.getMessage());
         response.put("status", notification.getStatus());
 
-        // ✅ Add users
+        //  Add users
         List<Map<String, Object>> usersList = new ArrayList<>();
         for (NotificationUsers user : notificationUserList) {
             Map<String, Object> userMap = new HashMap<>();
@@ -112,10 +112,10 @@ public class NotificationServiceImpl implements NotificationService {
             return null;
         }
 
-        // ✅ Get notification details from the first entry
+        //  Get notification details from the first entry
         Notification notification = userNotifications.get(0).getNotification();
 
-        // ✅ Convert to DTO for clean response
+        //  Convert to DTO for clean response
         List<NotificationUserDto> userDTOs = userNotifications.stream()
                 .map(user -> new NotificationUserDto(user.getId(), user.getUserId(), user.getStatus()))
                 .collect(Collectors.toList());
