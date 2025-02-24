@@ -12,5 +12,6 @@ public class ProductRequestDto {
     private Long quantity;
     private String name;
     private String currency;
-
+    private Long orderId; //24-02
+    
 }

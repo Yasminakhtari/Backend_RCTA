@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class StripeResponseDto {
+	private String paymentStatus; 
     private String status;
     private String message;
     private String sessionId;

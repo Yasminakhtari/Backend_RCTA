@@ -3,6 +3,7 @@ package com.ifacehub.tennis.serviceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ifacehub.tennis.entity.Order;
 import com.ifacehub.tennis.entity.ShippingAddress;
+import com.ifacehub.tennis.exception.ResourceNotFoundException;
 import com.ifacehub.tennis.repository.OrderRepository;
 import com.ifacehub.tennis.repository.ShippingAddressRepository;
 import com.ifacehub.tennis.repository.UserRepository;
@@ -40,8 +41,10 @@ public class OrderServiceImpl implements OrderService {
     public ResponseObject saveOrder(OrderDto orderDto) {
 
         try {
+        	Order order = Order.toEntity(orderDto);//24-02
+            order.setPaymentStatus("Pending");//24-02
             ObjectMapper objectMapper = new ObjectMapper();
-            Order order;
+//            Order order;
             // If orderId is provided, find the order and update status to "Success"
             if (orderDto.getOrderId() != null) {
                 Optional<Order> existingOrderOpt = orderRepository.findById(orderDto.getOrderId());
@@ -109,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
             // Save the updated or new order
             Order savedOrder = orderRepository.save(order);
 
-            return new ResponseObject(savedOrder, "SUCCESS", HttpStatus.OK, "Order saved successfully");
+            return new ResponseObject(savedOrder, "SUCCESS", HttpStatus.OK, "Order created successfully");
         } catch (Exception e) {
             return new ResponseObject(HttpStatus.BAD_REQUEST, "ERROR", "Failed to save order: " + e.getMessage());
         }
@@ -218,6 +221,38 @@ public class OrderServiceImpl implements OrderService {
 	        return new ResponseObject(addresses, "SUCCESS", HttpStatus.OK,"Get Shipping Adress by userId fetch sucessfully");
 	    } catch (Exception e) {
 	        return new ResponseObject(null,"ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch addresses: " + e.getMessage());
+	    }
+	}
+	
+	
+//	///24-02
+	@Override
+	public ResponseObject updateOrderStatus(Long orderId, String paymentStatus) {
+	    try {
+	        Order order = orderRepository.findById(orderId)
+	            .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+	        
+	        order.setPaymentStatus(paymentStatus);
+	        Order updatedOrder = orderRepository.save(order);
+	        
+	        return new ResponseObject(
+	            updatedOrder, 
+	            "SUCCESS", 
+	            HttpStatus.OK, 
+	            "Order status updated"
+	        );
+	    } catch (ResourceNotFoundException e) {
+	        return new ResponseObject(
+	            HttpStatus.NOT_FOUND, 
+	            "ERROR", 
+	            e.getMessage()
+	        );
+	    } catch (Exception e) {
+	        return new ResponseObject(
+	            HttpStatus.INTERNAL_SERVER_ERROR, 
+	            "ERROR", 
+	            "Error updating order: " + e.getMessage()
+	        );
 	    }
 	}
 

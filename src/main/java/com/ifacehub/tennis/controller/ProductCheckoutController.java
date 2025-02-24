@@ -4,12 +4,16 @@ import com.ifacehub.tennis.requestDto.ProductRequestDto;
 import com.ifacehub.tennis.responseDto.StripeResponseDto;
 import com.ifacehub.tennis.service.StripeService;
 import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.checkout.Session;
 import com.stripe.net.StripeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,4 +58,20 @@ public class ProductCheckoutController {
             throw new RuntimeException("Payment intent creation failed");
         }
     }
+    
+    
+    ////////////////////////
+    @GetMapping("/checkout/session/{sessionId}")
+    public ResponseEntity<StripeResponseDto> getCheckoutSession(@PathVariable String sessionId) 
+        throws StripeException {
+        Session session = Session.retrieve(sessionId);
+        return ResponseEntity.ok(StripeResponseDto.builder()
+            .status(session.getPaymentStatus())
+            .message("Session retrieved")
+            .sessionId(session.getId())
+            .sessionUrl(session.getUrl())
+            .build());
+    }
+    ////////////
+    
 }

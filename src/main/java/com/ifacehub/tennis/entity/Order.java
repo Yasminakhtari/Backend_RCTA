@@ -30,6 +30,7 @@ public class Order extends Auditable<String>{
     private Long userId;
     private Double total;
     private String paymentMethod;
+    @Column(name = "payment_status")//24-02
     private String paymentStatus;
     @Column(columnDefinition = "TEXT")
     private String items; // Store as JSON string
@@ -37,6 +38,8 @@ public class Order extends Auditable<String>{
     private String userName;
     @Transient
     private String mobileNo;
+    private String  transactionId;
+    
 
 
     private static final ObjectMapper objectMapper = new ObjectMapper();  // ObjectMapper to handle JSON

@@ -13,5 +13,6 @@ public interface OrderService {
     
     ResponseObject getShippingAddressByOrderId(Long orderId);
     ResponseObject getShippingAddressByUserId(Long userId);
+    ResponseObject updateOrderStatus(Long orderId, String paymentStatus);
 
 }

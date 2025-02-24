@@ -4,6 +4,9 @@ import com.ifacehub.tennis.requestDto.OrderDto;
 import com.ifacehub.tennis.requestDto.OrderRequestDto;
 import com.ifacehub.tennis.service.OrderService;
 import com.ifacehub.tennis.util.ResponseObject;
+
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +46,16 @@ public class OrderController {
     @GetMapping("/getShippingAddressByUserId/{userId}")
     public ResponseEntity<ResponseObject> getShippingAddressByUserId(@PathVariable Long userId) {
         ResponseObject response = orderService.getShippingAddressByUserId(userId);
+        return new ResponseEntity<>(response, response.getHttpStatus());
+    }
+    
+    //////24-02
+    @PatchMapping("/{orderId}/status")
+    public ResponseEntity<ResponseObject> updateOrderStatus(
+        @PathVariable Long orderId,
+        @RequestBody Map<String, String> statusUpdate
+    ) {
+        ResponseObject response = orderService.updateOrderStatus(orderId, statusUpdate.get("paymentStatus"));
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
     
