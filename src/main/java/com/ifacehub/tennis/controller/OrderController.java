@@ -56,6 +56,7 @@ public class OrderController {
         @RequestBody Map<String, String> statusUpdate
     ) {
         ResponseObject response = orderService.updateOrderStatus(orderId, statusUpdate.get("paymentStatus"));
+        System.out.println(response);
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
     

@@ -39,17 +39,17 @@ public class ProductCheckoutController {
                 .body(stripeResponse);
     }
 
-    @PostMapping("/create-payment-intent")
-    public Map<String, String> createPaymentIntent(@RequestBody Map<String, Object> data) {
-        // Stripe.apiKey = "pk_test_51QD6hCBRiCyZIwhRt6NQtUgAP3sjs1SfTNBUVH5EffpHsUXAFRtC8NbQRhMgQ10wUiU80WqBUKAaep882BgqX3ok00Ss2CxnzJ";  // Replace with your Stripe Secret Key
-        Stripe.apiKey = secretKey;
+     @PostMapping("/create-payment-intent")
+     public Map<String, String> createPaymentIntent(@RequestBody Map<String, Object> data) {
+       // Stripe.apiKey = "pk_test_51QD6hCBRiCyZIwhRt6NQtUgAP3sjs1SfTNBUVH5EffpHsUXAFRtC8NbQRhMgQ10wUiU80WqBUKAaep882BgqX3ok00Ss2CxnzJ";  // Replace with your Stripe Secret Key
+         Stripe.apiKey = secretKey;
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("amount", data.get("amount"));  // Amount in cents
+         Map<String, Object> params = new HashMap<>();
+         params.put("amount", data.get("amount"));  // Amount in cents
         params.put("currency", "usd");
 
         try {
-            PaymentIntent intent = PaymentIntent.create(params);
+             PaymentIntent intent = PaymentIntent.create(params);
             Map<String, String> responseData = new HashMap<>();
             responseData.put("clientSecret", intent.getClientSecret());
             return responseData;
@@ -57,8 +57,30 @@ public class ProductCheckoutController {
             e.printStackTrace();
             throw new RuntimeException("Payment intent creation failed");
         }
-    }
-    
+     }
+    // ProductCheckoutController.java - Update createPaymentIntent
+//@PostMapping("/create-payment-intent")
+//public Map<String, String> createPaymentIntent(@RequestBody Map<String, Object> data) {
+//    Stripe.apiKey = secretKey;
+//    
+//    // ⭐ Add metadata for order tracking
+//    Map<String, String> metadata = new HashMap<>();
+//    metadata.put("orderId", data.get("orderId").toString());
+//    
+//    Map<String, Object> params = new HashMap<>();
+//    params.put("amount", data.get("amount"));
+//    params.put("currency", "usd");
+//    params.put("metadata", metadata); // ⭐ Add metadata
+//
+//    try {
+//        PaymentIntent intent = PaymentIntent.create(params);
+//        Map<String, String> responseData = new HashMap<>();
+//        responseData.put("clientSecret", intent.getClientSecret());
+//        return responseData;
+//    } catch (Exception e) {
+//        throw new RuntimeException("Payment intent creation failed: " + e.getMessage());
+//    }
+//}
     
     ////////////////////////
     @GetMapping("/checkout/session/{sessionId}")

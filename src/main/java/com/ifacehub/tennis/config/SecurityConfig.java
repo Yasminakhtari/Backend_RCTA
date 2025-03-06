@@ -1,5 +1,7 @@
 package com.ifacehub.tennis.config;
 
+
+
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +60,9 @@ public class SecurityConfig {
                         "/api/t_session/**",
                         "/api/testimonial/**",
                         "/api/notification/**",
-                        "/api/product/v1/**").permitAll()
+                        "/api/product/v1/**",
+                        "/api/subscribe",
+                        "/api/send-push").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/api/**")
                 .authenticated().and()
@@ -88,21 +92,52 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(Arrays.asList(frontendOrigin)); 
+//        configuration.addAllowedMethod("*"); 
+//        configuration.addAllowedHeader("*"); 
+//        configuration.setAllowCredentials(true); 
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration); // Apply CORS configuration to all endpoints
+//        return source;
+//    }
+    
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(frontendOrigin)); 
-        configuration.addAllowedMethod("*"); 
-        configuration.addAllowedHeader("*"); 
-        configuration.setAllowCredentials(true); 
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    
+    // Allow frontend origin
+    configuration.setAllowedOrigins(Arrays.asList(frontendOrigin)); 
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Apply CORS configuration to all endpoints
-        return source;
-    }
+    // Allow all HTTP methods
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    
+    // Allow necessary headers
+    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "Origin"));
 
-    @Bean
-    public CorsFilter corsFilter() {
-        return new CorsFilter(corsConfigurationSource()); 
-    }
+    // Expose headers if needed
+    configuration.setExposedHeaders(Arrays.asList("Authorization"));
+
+    // Allow credentials (for cookies, authentication)
+    configuration.setAllowCredentials(true);
+
+    // Set preflight request max age to reduce preflight requests
+    configuration.setMaxAge(3600L);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    
+    // Apply CORS to ALL endpoints correctly
+    source.registerCorsConfiguration("/**", configuration);
+    
+    return source;
+}
+
+@Bean
+public CorsFilter corsFilter() {
+    return new CorsFilter(corsConfigurationSource());
+}
+
 }

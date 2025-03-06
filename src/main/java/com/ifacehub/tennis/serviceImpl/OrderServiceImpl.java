@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
 
         try {
         	Order order = Order.toEntity(orderDto);//24-02
-            order.setPaymentStatus("Pending");//24-02
+            //order.setPaymentStatus("Pending");//24-02
             ObjectMapper objectMapper = new ObjectMapper();
 //            Order order;
             // If orderId is provided, find the order and update status to "Success"
