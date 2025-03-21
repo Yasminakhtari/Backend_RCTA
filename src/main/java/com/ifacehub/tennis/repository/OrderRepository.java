@@ -23,4 +23,8 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
 """, nativeQuery = true)
 
     List<Long> findUserIdsBySessionId(Long sessionId, String fromDate, String toDate);
+
+    @Query("SELECT DISTINCT o.userId FROM Order o")
+    List<Long> findAllUserIds();
+
 }
