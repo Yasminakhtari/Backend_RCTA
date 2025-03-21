@@ -91,48 +91,48 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Arrays.asList(frontendOrigin)); 
-//        configuration.addAllowedMethod("*"); 
-//        configuration.addAllowedHeader("*"); 
-//        configuration.setAllowCredentials(true); 
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration); // Apply CORS configuration to all endpoints
-//        return source;
-//    }
-    
-    @Bean
-public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    
-    // Allow frontend origin
-    configuration.setAllowedOrigins(Arrays.asList(frontendOrigin)); 
+   @Bean
+   public CorsConfigurationSource corsConfigurationSource() {
+       CorsConfiguration configuration = new CorsConfiguration();
+       configuration.setAllowedOrigins(Arrays.asList(frontendOrigin)); 
+       configuration.addAllowedMethod("*"); 
+       configuration.addAllowedHeader("*"); 
+       configuration.setAllowCredentials(true); 
 
-    // Allow all HTTP methods
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+       UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+       source.registerCorsConfiguration("/**", configuration); // Apply CORS configuration to all endpoints
+       return source;
+   }
     
-    // Allow necessary headers
-    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "Origin"));
-
-    // Expose headers if needed
-    configuration.setExposedHeaders(Arrays.asList("Authorization"));
-
-    // Allow credentials (for cookies, authentication)
-    configuration.setAllowCredentials(true);
-
-    // Set preflight request max age to reduce preflight requests
-    configuration.setMaxAge(3600L);
-
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//     @Bean
+// public CorsConfigurationSource corsConfigurationSource() {
+//     CorsConfiguration configuration = new CorsConfiguration();
     
-    // Apply CORS to ALL endpoints correctly
-    source.registerCorsConfiguration("/**", configuration);
+//     // Allow frontend origin
+//     configuration.setAllowedOrigins(Arrays.asList(frontendOrigin)); 
+
+//     // Allow all HTTP methods
+//     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     
-    return source;
-}
+//     // Allow necessary headers
+//     configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "Origin"));
+
+//     // Expose headers if needed
+//     configuration.setExposedHeaders(Arrays.asList("Authorization"));
+
+//     // Allow credentials (for cookies, authentication)
+//     configuration.setAllowCredentials(true);
+
+//     // Set preflight request max age to reduce preflight requests
+//     configuration.setMaxAge(3600L);
+
+//     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    
+//     // Apply CORS to ALL endpoints correctly
+//     source.registerCorsConfiguration("/**", configuration);
+    
+//     return source;
+// }
 
 @Bean
 public CorsFilter corsFilter() {
