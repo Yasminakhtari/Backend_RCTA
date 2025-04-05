@@ -22,6 +22,9 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
     AND item->>'toDate' = :toDate
 """, nativeQuery = true)
 
+//    @Query("SELECT DISTINCT o.user.id FROM Order o WHERE o.session.id = :sessionId " +
+//            "AND (:fromDate IS NULL OR o.createdOn >= :fromDate) " +
+//            "AND (:toDate IS NULL OR o.createdOn <= :toDate)")
     List<Long> findUserIdsBySessionId(Long sessionId, String fromDate, String toDate);
 
     @Query("SELECT DISTINCT o.userId FROM Order o")

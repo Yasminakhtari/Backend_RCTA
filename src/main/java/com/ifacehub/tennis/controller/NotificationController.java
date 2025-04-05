@@ -51,10 +51,12 @@ public class NotificationController {
     @GetMapping("/user")
     public ResponseEntity<ResponseObject> getUserNotifications(
         @RequestParam Long userId,
-        @RequestParam(defaultValue = "false") boolean unreadOnly) {
+        @RequestParam(defaultValue = "false") boolean unreadOnly,
+        @RequestParam(defaultValue = "createdOn") String sortBy,
+        @RequestParam(defaultValue = "desc") String sortDirection) {
         
         try {
-            List<NotificationResponseDto> notifications = notificationService.getUserNotifications(userId, unreadOnly);
+            List<NotificationResponseDto> notifications = notificationService.getUserNotifications(userId, unreadOnly,sortBy,sortDirection);
             
             if(notifications.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT)

@@ -18,4 +18,5 @@ public interface SessionRepository extends JpaRepository<Session,Long> {
     List<Session> findSessionsByPlayersId(Long id);
 
     List<Session> findByUserIdOrderByIdDesc(Long userId);
+    List<Session> findByLocationId(Long locationId);
 }

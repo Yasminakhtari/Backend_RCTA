@@ -20,5 +20,6 @@ public class NotificationResponseDto {
     private String message;
     private String status;
     private LocalDateTime createdOn;
+    private Long sessionId;
     private List<NotificationUserDto> users;
 }

@@ -22,6 +22,8 @@ public class Notification extends Auditable<Long>{
     private List<Long> userIds;
     private String message;
     private String status;
+    @Column(name = "session_id")
+    private Long sessionId;
     @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NotificationUsers> notificationUsers;  // Link to users
 }

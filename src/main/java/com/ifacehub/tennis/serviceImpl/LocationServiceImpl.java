@@ -1,7 +1,9 @@
 package com.ifacehub.tennis.serviceImpl;
 
+import com.ifacehub.tennis.entity.Session;
 import com.ifacehub.tennis.entity.Location;
 import com.ifacehub.tennis.repository.LocationRepository;
+import com.ifacehub.tennis.repository.SessionRepository;
 import com.ifacehub.tennis.requestDto.LocationDto;
 import com.ifacehub.tennis.service.LocationService;
 import com.ifacehub.tennis.util.ResponseObject;
@@ -15,6 +17,8 @@ import java.util.List;
 public class LocationServiceImpl implements LocationService {
     @Autowired
     private LocationRepository locationRepository;
+    @Autowired
+    private SessionRepository sessionRepository;
     @Override
     public ResponseObject createLocation(LocationDto locationDto) {
         try{
@@ -88,6 +92,16 @@ public class LocationServiceImpl implements LocationService {
             return new ResponseObject(locationList, "SUCCESS", HttpStatus.OK, "Location fetched successfully");
         } catch (Exception e) {
             return new ResponseObject(null, "ERROR", HttpStatus.NOT_FOUND, "Location not found");
+        }
+    }
+    
+ // LocationServiceImpl.java
+    public ResponseObject getSessionsByLocation(Long locationId) {
+        try {
+            List<Session> sessions = sessionRepository.findByLocationId(locationId);
+            return new ResponseObject(sessions, "SUCCESS", HttpStatus.OK, "Sessions fetched successfully");
+        } catch (Exception e) {
+            return new ResponseObject(HttpStatus.BAD_REQUEST, "ERROR", "Failed to fetch sessions: " + e.getMessage());
         }
     }
 

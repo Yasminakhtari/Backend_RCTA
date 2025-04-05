@@ -139,6 +139,7 @@ public class NotificationServiceImpl implements NotificationService {
             notification.setCreatedOn(LocalDateTime.now());
             notification.setMessage(message);
             notification.setStatus("SENT");
+            notification.setSessionId(sessionId); 
 
 //        List<NotificationUsers> notificationUserList = new ArrayList<>();
 //        for (Long userId : userIds) {
@@ -157,6 +158,7 @@ public class NotificationServiceImpl implements NotificationService {
                 notificationUser.setUserId(uid);
                 notificationUser.setStatus("unread");
                 notificationUser.setCreatedOn(LocalDateTime.now());
+                
                 return notificationUser;
             }).collect(Collectors.toList());
 
@@ -203,12 +205,16 @@ public class NotificationServiceImpl implements NotificationService {
     //     );
     // }
     @Override
-    public List<NotificationResponseDto> getUserNotifications(Long userId,boolean unreadOnly) {
+    public List<NotificationResponseDto> getUserNotifications(Long userId,boolean unreadOnly,String sortBy,String sortDirection) {
         List<NotificationUsers> userNotifications = unreadOnly ?
             notificationUsersRepository.findByUserIdAndStatus(userId, "unread") :
             notificationUsersRepository.findByUserId(userId);
 
         return userNotifications.stream()
+        		.sorted((a, b) -> {
+                    int direction = sortDirection.equalsIgnoreCase("asc") ? 1 : -1;
+                    return b.getCreatedOn().compareTo(a.getCreatedOn()) * direction;
+                })
             .collect(Collectors.groupingBy(NotificationUsers::getNotification))
             .entrySet().stream()
             .map(entry -> {
@@ -218,6 +224,7 @@ public class NotificationServiceImpl implements NotificationService {
                     notification.getMessage(),
                     notification.getStatus(),
                     notification.getCreatedOn(),
+                    notification.getSessionId(),
                     entry.getValue().stream()
                         .map(nu -> new NotificationUserDto(
                             nu.getId(),
@@ -228,6 +235,7 @@ public class NotificationServiceImpl implements NotificationService {
                         .collect(Collectors.toList())
                 );
             })
+            .sorted((a, b) -> b.getCreatedOn().compareTo(a.getCreatedOn()))
             .collect(Collectors.toList());
     }
 
